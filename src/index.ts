@@ -5,13 +5,12 @@ import { type Nullable } from "./types/common";
 import { type FileHandle } from "node:fs/promises";
 
 async function main(argv: string[]) {
-	const path = argv[0];
+	const path = argv[2];
 
 	let fileHandle: Nullable<FileHandle> = undefined;
 	try {
 		fileHandle = await open(path, "r");
-		const lockFile = parseLockFile(fileHandle);
-		console.log(lockFile);
+		const lockFile = await parseLockFile(fileHandle);
 	} finally {
 		if (!fileHandle) {
 			return;

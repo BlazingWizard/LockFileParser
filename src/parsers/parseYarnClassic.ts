@@ -1,3 +1,8 @@
+import { readFileByLine } from "../helpers/readFile";
 import { type FileHandle } from "node:fs/promises";
 
-export function parseYarnClassic(fileHandle: FileHandle) {}
+export async function parseYarnClassic(fileHandle: FileHandle) {
+	for await (const line of readFileByLine(fileHandle)) {
+		console.log(line);
+	}
+}
