@@ -4,7 +4,6 @@
 	"repository": "git@github.com:BlazingWizard/LockFileParser.git",
 	"author": "BlazingWizard <lobanov.viktor.v@gmail.com>",
 	"license": "MIT",
-	"type": "module",
 	"packageManager": "yarn@3.4.1",
 	"scripts": {
 		"build": "tsc",
