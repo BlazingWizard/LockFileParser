@@ -1,14 +1,13 @@
-import { readFileByLine } from "../helpers/readFile";
 import { getEmptyPackageInfo } from "../helpers/packageHelper";
 
-import { type FileHandle } from "node:fs/promises";
+import { type Reader } from "../types/common";
 import { type PackageInfo } from "../types/domain";
 
-export async function parseYarnClassic(fileHandle: FileHandle) {
+export async function parseYarnClassic(byLineReader: Reader) {
 	const packages: PackageInfo[] = [];
 	let currentPackageInfo: PackageInfo = getEmptyPackageInfo();
 
-	for await (const line of readFileByLine(fileHandle)) {
+	for await (const line of byLineReader()) {
 		if (isIgnoredLine(line)) {
 			continue;
 		}
