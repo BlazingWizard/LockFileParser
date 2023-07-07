@@ -10,7 +10,8 @@ async function main(argv: string[]) {
 	let fileHandle: Nullable<FileHandle> = undefined;
 	try {
 		fileHandle = await open(path, "r");
-		const lockFile = await parseLockFile(fileHandle);
+		const packageInfo = await parseLockFile(fileHandle);
+		console.log(packageInfo);
 	} finally {
 		if (!fileHandle) {
 			return;
