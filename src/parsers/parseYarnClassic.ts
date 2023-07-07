@@ -14,8 +14,9 @@ export async function parseYarnClassic(fileHandle: FileHandle) {
 		}
 
 		if (/^\S/.test(line)) {
-			// TODO ignore first
-			packages.push(currentPackageInfo);
+			if (currentPackageInfo.name !== "") {
+				packages.push(currentPackageInfo);
+			}
 			currentPackageInfo = getEmptyPackageInfo();
 
 			const [name, versions] = parseName(line);
@@ -35,6 +36,8 @@ export async function parseYarnClassic(fileHandle: FileHandle) {
 		const dependency = parseDependency(trimmedLine);
 		currentPackageInfo.dependencies.push(dependency);
 	}
+
+	packages.push(currentPackageInfo);
 
 	return packages;
 }
