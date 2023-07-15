@@ -1,4 +1,4 @@
-export type LockFileType = "yarn_classic";
+export type LockFileType = "yarn_classic" | "yarn_berry";
 
 export interface PackageInfo {
 	name: string;
