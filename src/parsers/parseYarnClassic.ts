@@ -1,3 +1,4 @@
+import { first } from "../helpers/arrays";
 import { getEmptyPackageInfo } from "../helpers/packageHelper";
 
 import { type Reader } from "../types/common";
@@ -53,9 +54,24 @@ function isIgnoredLine(line: string) {
 	return isEmpty || isComment || isIgnoredProps;
 }
 
-function parseName(name: string): [string, string[]] {
-	// TODO parsing
-	return [name, [name]];
+function parseName(nameRaw: string): [string, string[]] {
+	const nameWithVersions = nameRaw
+		.slice(0, nameRaw.length - 1)
+		.split(", ")
+		.map(splitNameAndVersion);
+
+	const versions = nameWithVersions.map((nv) => nv.version);
+	return [first(nameWithVersions).name, versions];
+}
+
+function splitNameAndVersion(nameWithVersion: string) {
+	const str = nameWithVersion.replaceAll('"', "");
+	const lastAtIndex = str.lastIndexOf("@");
+
+	const name = str.slice(0, lastAtIndex);
+	const version = str.slice(lastAtIndex + 1);
+
+	return { name, version };
 }
 
 function parseVersion(version: string) {
