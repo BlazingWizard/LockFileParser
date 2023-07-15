@@ -48,7 +48,7 @@ function isIgnoredLine(line: string) {
 	const isEmpty = trimmedLine === "";
 	const isComment = trimmedLine.startsWith("#");
 
-	const ignoredProps = ["resolved", "integrity", "dependencies"];
+	const ignoredProps = ["resolved", "integrity", "dependencies", "uid"];
 	const isIgnoredProps = ignoredProps.find((prop) => trimmedLine.startsWith(prop));
 
 	return isEmpty || isComment || isIgnoredProps;
