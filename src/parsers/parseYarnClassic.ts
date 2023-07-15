@@ -28,7 +28,7 @@ export async function parseYarnClassic(byLineReader: Reader) {
 
 		const trimmedLine = line.trim();
 		if (trimmedLine.startsWith("version")) {
-			currentPackageInfo.versions.resolved = parseVersion(trimmedLine);
+			currentPackageInfo.versions.resolved = parseVersion(trimmedLine).version;
 
 			continue;
 		}
@@ -74,15 +74,20 @@ function splitNameAndVersion(nameWithVersion: string) {
 	return { name, version };
 }
 
-function parseVersion(version: string) {
-	// TODO parsing
-	return version;
+function parseVersion(versionRaw: string) {
+	const str = versionRaw.replaceAll('"', "");
+	const firstSpaceIndex = versionRaw.indexOf(" ");
+
+	const name = str.slice(0, firstSpaceIndex);
+	const version = str.slice(firstSpaceIndex + 1);
+
+	return { name, version };
 }
 
 function parseDependency(dependency: string) {
-	// TODO parsing
+	const dependencyInfo = parseVersion(dependency);
 	return {
-		name: dependency,
-		requestedVersion: dependency,
+		name: dependencyInfo.name,
+		requestedVersion: dependencyInfo.version,
 	};
 }
