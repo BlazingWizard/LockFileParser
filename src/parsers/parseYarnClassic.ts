@@ -65,5 +65,8 @@ function parseVersion(version: string) {
 
 function parseDependency(dependency: string) {
 	// TODO parsing
-	return dependency;
+	return {
+		name: dependency,
+		requestedVersion: dependency,
+	};
 }
