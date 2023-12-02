@@ -55,7 +55,7 @@ export async function parseYarnBerry(byLineReader: Reader) {
 
 function isIgnoredBlock(line: string) {
 	const trimmedLine = line.trim();
-	const ignoredBlocks = ["bin", "peerDependenciesMeta"];
+	const ignoredBlocks = ["bin", "dependenciesMeta", "peerDependenciesMeta"];
 	return ignoredBlocks.find((blockName) => trimmedLine.startsWith(blockName));
 }
 

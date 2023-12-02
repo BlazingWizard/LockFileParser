@@ -201,4 +201,41 @@ describe("parseYarnBerry", () => {
 		expect(packagesInfo).toHaveLength(1);
 		expect(dependencies).toHaveLength(0);
 	});
+
+	test("Ignore dependenciesMeta", async () => {
+		const reader = () =>
+			byLineReader(`
+				"asar@npm:^3.1.0":
+				version: 3.2.0
+				resolution: "asar@npm:3.2.0"
+				dependencies:
+					"@types/glob": ^7.1.1
+					chromium-pickle-js: ^0.2.0
+					commander: ^5.0.0
+					glob: ^7.1.6
+					minimatch: ^3.0.4
+				dependenciesMeta:
+					"@types/glob":
+						optional: true
+				bin:
+					asar: bin/asar.js
+				checksum: f7d30b45970b053252ac124230bf319459d0728d7f6dedbe2f765cd2a83792d5a716d2c3f2861ceda69372b401f335e1f46460335169eadd0e91a0904a4f5a15
+				languageName: node
+				linkType: hard
+			`);
+
+		const packagesInfo = await parseYarnBerry(reader);
+		const dependencies = first(packagesInfo).dependencies;
+
+		expect(packagesInfo).toHaveLength(1);
+		expect(dependencies).toHaveLength(5);
+
+		expect(dependencies).toStrictEqual([
+			{ name: "@types/glob", requestedVersion: "^7.1.1" },
+			{ name: "chromium-pickle-js", requestedVersion: "^0.2.0" },
+			{ name: "commander", requestedVersion: "^5.0.0" },
+			{ name: "glob", requestedVersion: "^7.1.6" },
+			{ name: "minimatch", requestedVersion: "^3.0.4" },
+		]);
+	});
 });
