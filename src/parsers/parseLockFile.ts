@@ -5,7 +5,7 @@ import { parseYarnBerry } from "./parseYarnBerry";
 import { type FileHandle } from "node:fs/promises";
 import { type LockFileType } from "../types/domain";
 
-export async function parseLockFile(fileHandle: FileHandle, type: LockFileType = "yarn_classic") {
+export async function parseLockFile(fileHandle: FileHandle, type: LockFileType = "yarn_berry") {
 	const reader = () => readFileByLine(fileHandle);
 	switch (type) {
 		case "yarn_classic":
