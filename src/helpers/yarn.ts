@@ -24,7 +24,7 @@ export function parseVersion(versionRaw: string) {
 	const str = versionRaw.replaceAll('"', "");
 	const firstSpaceIndex = versionRaw.indexOf(" ");
 
-	const name = str.slice(0, firstSpaceIndex);
+	const name = str.slice(0, firstSpaceIndex).replace(/:$/, "");
 	const version = str.slice(firstSpaceIndex + 1);
 
 	return { name, version };

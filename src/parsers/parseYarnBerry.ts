@@ -6,10 +6,21 @@ import { type PackageInfo } from "../types/domain";
 
 export async function parseYarnBerry(byLineReader: Reader) {
 	const packages: PackageInfo[] = [];
-	let currentPackageInfo: PackageInfo = getEmptyPackageInfo();
 
+	let isBinLines = false;
+	let currentPackageInfo: PackageInfo = getEmptyPackageInfo();
 	for await (const line of byLineReader()) {
 		if (isIgnoredLine(line)) {
+			isBinLines = false;
+			continue;
+		}
+
+		if (isBin(line)) {
+			isBinLines = true;
+			continue;
+		}
+
+		if (isBinLines) {
 			continue;
 		}
 
@@ -34,15 +45,17 @@ export async function parseYarnBerry(byLineReader: Reader) {
 		}
 
 		const dependency = parseDependency(trimmedLine);
-		if (isBin(dependency.requestedVersion)) {
-			continue;
-		}
 		currentPackageInfo.dependencies.push(dependency);
 	}
 
 	packages.push(currentPackageInfo);
 
 	return packages;
+}
+
+function isBin(line: string) {
+	const trimmedLine = line.trim();
+	return trimmedLine.startsWith("bin");
 }
 
 function isIgnoredLine(line: string) {
@@ -53,7 +66,6 @@ function isIgnoredLine(line: string) {
 
 	const ignoredProps = [
 		"__metadata",
-		"bin",
 		"cacheKey",
 		"checksum",
 		"dependencies",
@@ -64,8 +76,4 @@ function isIgnoredLine(line: string) {
 	const isIgnoredProps = ignoredProps.find((prop) => trimmedLine.startsWith(prop));
 
 	return isEmpty || isComment || isIgnoredProps;
-}
-
-function isBin(line: string) {
-	return !line.startsWith('"') && line.includes("/");
 }
