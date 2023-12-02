@@ -6,7 +6,7 @@ export function parseName(nameRaw: string): [string, string[]] {
 		.split(", ")
 		.map(splitNameAndVersion);
 
-	const versions = nameWithVersions.map((nv) => nv.version);
+	const versions = nameWithVersions.map((nv) => nv.version.replace("npm:", ""));
 	return [first(nameWithVersions).name, versions];
 }
 

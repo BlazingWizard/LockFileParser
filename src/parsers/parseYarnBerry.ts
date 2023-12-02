@@ -34,6 +34,9 @@ export async function parseYarnBerry(byLineReader: Reader) {
 		}
 
 		const dependency = parseDependency(trimmedLine);
+		if (isBin(dependency.requestedVersion)) {
+			continue;
+		}
 		currentPackageInfo.dependencies.push(dependency);
 	}
 
@@ -61,4 +64,8 @@ function isIgnoredLine(line: string) {
 	const isIgnoredProps = ignoredProps.find((prop) => trimmedLine.startsWith(prop));
 
 	return isEmpty || isComment || isIgnoredProps;
+}
+
+function isBin(line: string) {
+	return !line.startsWith('"') && line.includes("/");
 }
