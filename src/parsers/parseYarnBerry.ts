@@ -67,6 +67,7 @@ function isIgnoredLine(line: string) {
 
 	const ignoredProps = [
 		"__metadata:",
+		"conditions:",
 		"cacheKey:",
 		"checksum:",
 		"dependencies:",

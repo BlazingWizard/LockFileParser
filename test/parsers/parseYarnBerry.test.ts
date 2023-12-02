@@ -183,4 +183,22 @@ describe("parseYarnBerry", () => {
 			{ name: "utf-8-validate", requestedVersion: "^5.0.2" },
 		]);
 	});
+
+	test("Ignore conditions", async () => {
+		const reader = () =>
+			byLineReader(`
+				"@esbuild/win32-x64@npm:0.18.20":
+				version: 0.18.20
+				resolution: "@esbuild/win32-x64@npm:0.18.20"
+				conditions: os=win32 & cpu=x64
+				languageName: node
+				linkType: hard
+			`);
+
+		const packagesInfo = await parseYarnBerry(reader);
+		const dependencies = first(packagesInfo).dependencies;
+
+		expect(packagesInfo).toHaveLength(1);
+		expect(dependencies).toHaveLength(0);
+	});
 });
