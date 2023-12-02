@@ -22,7 +22,7 @@ function splitNameAndVersion(nameWithVersion: string) {
 
 export function parseVersion(versionRaw: string) {
 	const str = versionRaw.replaceAll('"', "");
-	const firstSpaceIndex = versionRaw.indexOf(" ");
+	const firstSpaceIndex = str.indexOf(" ");
 
 	const name = str.slice(0, firstSpaceIndex).replace(/:$/, "");
 	const version = str.slice(firstSpaceIndex + 1);

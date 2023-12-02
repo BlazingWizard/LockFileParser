@@ -126,4 +126,30 @@ describe("parseYarnBerry", () => {
 		expect(first(dependencies).name).toBe("js-tokens");
 		expect(first(dependencies).requestedVersion).toBe("^3.0.0 || ^4.0.0");
 	});
+
+	test("Can parse dependencies with @", async () => {
+		const reader = () =>
+			byLineReader(`
+				"@auto-it/version-file@npm:10.37.6":
+				version: 10.37.6
+				resolution: "@auto-it/version-file@npm:10.37.6"
+				dependencies:
+					"@auto-it/core": 10.37.6
+					fp-ts: ^2.5.3
+					io-ts: ^2.1.2
+					semver: ^7.0.0
+					tslib: 1.10.0
+				checksum: 6a68dc9ca871d6fb74dc79b9bfc50de413650e0b79da6a7e47fcb0cf847cbe277a5a025dd726cb58c5bccd91428c1faaf10bf0ba16fa75329c8a468604adec65
+				languageName: node
+				linkType: hard
+			`);
+		const packagesInfo = await parseYarnBerry(reader);
+		const dependencies = first(packagesInfo).dependencies;
+
+		expect(packagesInfo).toHaveLength(1);
+		expect(dependencies).toHaveLength(5);
+
+		expect(first(dependencies).name).toBe("@auto-it/core");
+		expect(first(dependencies).requestedVersion).toBe("10.37.6");
+	});
 });
