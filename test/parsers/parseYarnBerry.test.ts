@@ -152,4 +152,35 @@ describe("parseYarnBerry", () => {
 		expect(first(dependencies).name).toBe("@auto-it/core");
 		expect(first(dependencies).requestedVersion).toBe("10.37.6");
 	});
+
+	test("Can parse peerDependencies", async () => {
+		const reader = () =>
+			byLineReader(`
+				"ws@npm:~7.4.0":
+				version: 7.4.6
+				resolution: "ws@npm:7.4.6"
+				peerDependencies:
+					bufferutil: ^4.0.1
+					utf-8-validate: ^5.0.2
+				peerDependenciesMeta:
+					bufferutil:
+						optional: true
+					utf-8-validate:
+						optional: true
+				checksum: 3a990b32ed08c72070d5e8913e14dfcd831919205be52a3ff0b4cdd998c8d554f167c9df3841605cde8b11d607768cacab3e823c58c96a5c08c987e093eb767a
+				languageName: node
+				linkType: hard
+			`);
+
+		const packagesInfo = await parseYarnBerry(reader);
+		const dependencies = first(packagesInfo).dependencies;
+
+		expect(packagesInfo).toHaveLength(1);
+		expect(dependencies).toHaveLength(2);
+
+		expect(dependencies).toStrictEqual([
+			{ name: "bufferutil", requestedVersion: "^4.0.1" },
+			{ name: "utf-8-validate", requestedVersion: "^5.0.2" },
+		]);
+	});
 });

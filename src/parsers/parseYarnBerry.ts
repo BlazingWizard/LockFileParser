@@ -7,20 +7,20 @@ import { type PackageInfo } from "../types/domain";
 export async function parseYarnBerry(byLineReader: Reader) {
 	const packages: PackageInfo[] = [];
 
-	let isBinLines = false;
+	let isIgnoredBlockLines = false;
 	let currentPackageInfo: PackageInfo = getEmptyPackageInfo();
 	for await (const line of byLineReader()) {
 		if (isIgnoredLine(line)) {
-			isBinLines = false;
+			isIgnoredBlockLines = false;
 			continue;
 		}
 
-		if (isBin(line)) {
-			isBinLines = true;
+		if (isIgnoredBlock(line)) {
+			isIgnoredBlockLines = true;
 			continue;
 		}
 
-		if (isBinLines) {
+		if (isIgnoredBlockLines) {
 			continue;
 		}
 
@@ -53,9 +53,10 @@ export async function parseYarnBerry(byLineReader: Reader) {
 	return packages;
 }
 
-function isBin(line: string) {
+function isIgnoredBlock(line: string) {
 	const trimmedLine = line.trim();
-	return trimmedLine.startsWith("bin");
+	const ignoredBlocks = ["bin", "peerDependenciesMeta"];
+	return ignoredBlocks.find((blockName) => trimmedLine.startsWith(blockName));
 }
 
 function isIgnoredLine(line: string) {
@@ -65,13 +66,14 @@ function isIgnoredLine(line: string) {
 	const isComment = trimmedLine.startsWith("#");
 
 	const ignoredProps = [
-		"__metadata",
-		"cacheKey",
-		"checksum",
-		"dependencies",
-		"languageName",
-		"linkType",
-		"resolution",
+		"__metadata:",
+		"cacheKey:",
+		"checksum:",
+		"dependencies:",
+		"languageName:",
+		"linkType:",
+		"resolution:",
+		"peerDependencies:",
 	];
 	const isIgnoredProps = ignoredProps.find((prop) => trimmedLine.startsWith(prop));
 
